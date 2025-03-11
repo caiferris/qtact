@@ -114,7 +114,7 @@ async fn main() -> std::io::Result<()> {
     let res = qclient
         .create_collection(
             CreateCollectionBuilder::new("qtact")
-                .vectors_config(VectorParamsBuilder::new(512, Distance::Cosine)),
+                .vectors_config(VectorParamsBuilder::new(3, Distance::Cosine)),
         )
         .await
         .unwrap();
