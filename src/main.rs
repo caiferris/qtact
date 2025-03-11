@@ -8,7 +8,7 @@ use qdrant_client::{
     Qdrant,
     qdrant::{
         CreateCollectionBuilder, DeletePointsBuilder, Distance, GetPointsBuilder, PointStruct,
-        PointsIdsList, UpsertPointsBuilder, VectorParamsBuilder,
+        PointsIdsList, QueryPointsBuilder, UpsertPointsBuilder, VectorParamsBuilder,
     },
 };
 
@@ -35,8 +35,8 @@ async fn create_vector(qclient: web::Data<Qdrant>, vector: web::Json<Vector>) ->
         .await
     {
         Ok(response) => {
-            dbg!("Response = {:?}", &response);
-            HttpResponse::Ok().body(format!("Vector created = {:?}", response))
+            dbg!("Response = {:#?}", &response);
+            HttpResponse::Ok().body(format!("Vector created = {:#?}", response))
         }
         Err(err) => HttpResponse::InternalServerError().body(format!("Error = {}", err)),
     }
@@ -53,8 +53,8 @@ async fn get_vector(qclient: web::Data<Qdrant>, vector_id: web::Path<u64>) -> im
         .await
     {
         Ok(response) => {
-            dbg!("Point = {:?}", &response);
-            HttpResponse::Ok().body(format!("{:?}", response))
+            dbg!("Point = {:#?}", &response);
+            HttpResponse::Ok().body(format!("{:#?}", response))
         }
         Err(err) => HttpResponse::InternalServerError().body(format!("Error = {}", err)),
     }
@@ -75,8 +75,8 @@ async fn update_vector(qclient: web::Data<Qdrant>, vector: web::Json<Vector>) ->
         .await
     {
         Ok(response) => {
-            dbg!("Point Updated = {:?}", &response);
-            HttpResponse::Ok().body(format!("{:?}", response))
+            dbg!("Point Updated = {:#?}", &response);
+            HttpResponse::Ok().body(format!("{:#?}", response))
         }
         Err(err) => HttpResponse::InternalServerError().body(format!("Error = {}", err)),
     }
@@ -96,8 +96,19 @@ async fn delete_vector(qclient: web::Data<Qdrant>, vector_id: web::Path<u64>) ->
     {
         Ok(response) => {
             dbg!("Deleted vector = {:?}", &response);
-            HttpResponse::Ok().body(format!("Deleted vector = {:?}", response))
+            HttpResponse::Ok().body(format!("Deleted vector = {:#?}", response))
         }
+        Err(err) => HttpResponse::InternalServerError().body(format!("Error = {}", err)),
+    }
+}
+
+#[get("/matchvector")]
+async fn match_vector(qclient: web::Data<Qdrant>, vector: web::Json<Vec<f32>>) -> impl Responder {
+    match qclient
+        .query(QueryPointsBuilder::new("qtact").query(vector.into_inner()))
+        .await
+    {
+        Ok(response) => HttpResponse::Ok().body(format!("{:#?}", response)),
         Err(err) => HttpResponse::InternalServerError().body(format!("Error = {}", err)),
     }
 }
@@ -112,12 +123,14 @@ async fn main() -> std::io::Result<()> {
 
     //  Create collection
     match qclient.collection_exists("qtact").await {
-        Ok(true) => (),
+        Ok(true) => {
+            dbg!("Collection qtact exists, using the existing");
+        }
         Ok(false) => {
             let res = qclient
                 .create_collection(
                     CreateCollectionBuilder::new("qtact")
-                        .vectors_config(VectorParamsBuilder::new(3, Distance::Cosine)),
+                        .vectors_config(VectorParamsBuilder::new(4, Distance::Cosine)),
                 )
                 .await
                 .unwrap();
@@ -142,7 +155,8 @@ async fn main() -> std::io::Result<()> {
                     .service(create_vector)
                     .service(get_vector)
                     .service(update_vector)
-                    .service(delete_vector),
+                    .service(delete_vector)
+                    .service(match_vector),
             )
     })
     .bind(("127.0.0.1", 8080))?
