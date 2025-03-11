@@ -1,5 +1,5 @@
 use actix_web::{
-    App, HttpResponse, HttpServer, Responder, get, middleware::Logger, post, put, web,
+    App, HttpResponse, HttpServer, Responder, delete, get, middleware::Logger, post, put, web,
 };
 use data_model::vector::Vector;
 use env_logger::Env;
@@ -7,8 +7,8 @@ use qdrant::create_qdrant_client;
 use qdrant_client::{
     Qdrant,
     qdrant::{
-        CreateCollectionBuilder, Distance, GetPointsBuilder, PointStruct, UpsertPointsBuilder,
-        VectorParamsBuilder,
+        CreateCollectionBuilder, DeletePointsBuilder, Distance, GetPointsBuilder, PointStruct,
+        PointsIdsList, UpsertPointsBuilder, VectorParamsBuilder,
     },
 };
 
@@ -77,6 +77,26 @@ async fn update_vector(qclient: web::Data<Qdrant>, vector: web::Json<Vector>) ->
         Ok(response) => {
             dbg!("Point Updated = {:?}", &response);
             HttpResponse::Ok().body(format!("{:?}", response))
+        }
+        Err(err) => HttpResponse::InternalServerError().body(format!("Error = {}", err)),
+    }
+}
+
+#[delete("/vector/{id}")]
+async fn delete_vector(qclient: web::Data<Qdrant>, vector_id: web::Path<u64>) -> impl Responder {
+    match qclient
+        .delete_points(
+            DeletePointsBuilder::new("qtact")
+                .points(PointsIdsList {
+                    ids: vec![vector_id.into_inner().into()],
+                })
+                .wait(true),
+        )
+        .await
+    {
+        Ok(response) => {
+            dbg!("Deleted vector = {:?}", &response);
+            HttpResponse::Ok().body(format!("Deleted vector = {:?}", response))
         }
         Err(err) => HttpResponse::InternalServerError().body(format!("Error = {}", err)),
     }
