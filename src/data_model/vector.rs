@@ -7,5 +7,6 @@ use serde::{Deserialize, Serialize};
 pub struct Vector {
     pub id: u64,
     pub vector: Vec<f32>,
-    pub payload: HashMap<String, Value>,
+    #[serde(default)]
+    pub payload: Option<HashMap<String, Value>>,
 }

@@ -1,4 +1,6 @@
-use actix_web::{App, HttpResponse, HttpServer, Responder, get, middleware::Logger, post, web};
+use actix_web::{
+    App, HttpResponse, HttpServer, Responder, get, middleware::Logger, post, put, web,
+};
 use data_model::vector::Vector;
 use env_logger::Env;
 use qdrant::create_qdrant_client;
@@ -19,24 +21,28 @@ async fn index() -> impl Responder {
     HttpResponse::Ok().finish()
 }
 
-#[post("/create")]
+#[post("/vector")]
 async fn create_vector(qclient: web::Data<Qdrant>, vector: web::Json<Vector>) -> impl Responder {
     let vector = vector.into_inner();
+    let payload = vector.payload.clone().unwrap_or_default();
     let point = PointStruct {
         id: Some(vector.id.into()),
         vectors: Some(vector.vector.clone().into()),
-        payload: vector.payload,
+        payload,
     };
     match qclient
         .upsert_points(UpsertPointsBuilder::new("qtact", vec![point]).wait(true))
         .await
     {
-        Ok(_) => HttpResponse::Ok().body("Vector created"),
+        Ok(response) => {
+            dbg!("Response = {:?}", &response);
+            HttpResponse::Ok().body(format!("Vector created = {:?}", response))
+        }
         Err(err) => HttpResponse::InternalServerError().body(format!("Error = {}", err)),
     }
 }
 
-#[get("/get/{id}")]
+#[get("/vector/{id}")]
 async fn get_vector(qclient: web::Data<Qdrant>, vector_id: web::Path<u64>) -> impl Responder {
     match qclient
         .get_points(
@@ -46,7 +52,32 @@ async fn get_vector(qclient: web::Data<Qdrant>, vector_id: web::Path<u64>) -> im
         )
         .await
     {
-        Ok(point) => HttpResponse::Ok().json(serde_json::from_reader(point)),
+        Ok(response) => {
+            dbg!("Point = {:?}", &response);
+            HttpResponse::Ok().body(format!("{:?}", response))
+        }
+        Err(err) => HttpResponse::InternalServerError().body(format!("Error = {}", err)),
+    }
+}
+
+#[put("/vector/{id}")]
+async fn update_vector(qclient: web::Data<Qdrant>, vector: web::Json<Vector>) -> impl Responder {
+    let vector = vector.into_inner();
+    let payload = vector.payload.clone().unwrap_or_default();
+    let point = PointStruct {
+        id: Some(vector.id.into()),
+        vectors: Some(vector.vector.into()),
+        payload,
+    };
+
+    match qclient
+        .upsert_points(UpsertPointsBuilder::new("qtact", vec![point]))
+        .await
+    {
+        Ok(response) => {
+            dbg!("Point Updated = {:?}", &response);
+            HttpResponse::Ok().body(format!("{:?}", response))
+        }
         Err(err) => HttpResponse::InternalServerError().body(format!("Error = {}", err)),
     }
 }
@@ -69,8 +100,14 @@ async fn main() -> std::io::Result<()> {
         .unwrap();
 
     // Server
-    HttpServer::new(|| App::new().wrap(Logger::default()).service(index))
-        .bind(("127.0.0.1", 8080))?
-        .run()
-        .await
+    HttpServer::new(|| {
+        App::new()
+            .wrap(Logger::default())
+            .service(index)
+            .service(create_vector)
+            .service(update_vector)
+    })
+    .bind(("127.0.0.1", 8080))?
+    .run()
+    .await
 }
