@@ -119,13 +119,23 @@ async fn main() -> std::io::Result<()> {
         .await
         .unwrap();
 
+    dbg!("Create Collection Response = {:?}", res);
+
+    let qclient = web::Data::new(qclient);
+
     // Server
-    HttpServer::new(|| {
+    HttpServer::new(move || {
         App::new()
+            .app_data(web::Data::clone(&qclient))
             .wrap(Logger::default())
-            .service(index)
-            .service(create_vector)
-            .service(update_vector)
+            .service(
+                // Scoped for v1 APIs
+                web::scope("/v1")
+                    .service(index)
+                    .service(create_vector)
+                    .service(update_vector)
+                    .service(delete_vector),
+            )
     })
     .bind(("127.0.0.1", 8080))?
     .run()
