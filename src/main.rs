@@ -42,7 +42,7 @@ async fn create_vector(qclient: web::Data<Qdrant>, vector: web::Json<Vector>) ->
     }
 }
 
-#[get("/vector/{id}")]
+#[get("/vector/{vector_id}")]
 async fn get_vector(qclient: web::Data<Qdrant>, vector_id: web::Path<u64>) -> impl Responder {
     match qclient
         .get_points(
@@ -60,7 +60,7 @@ async fn get_vector(qclient: web::Data<Qdrant>, vector_id: web::Path<u64>) -> im
     }
 }
 
-#[put("/vector/{id}")]
+#[put("/vector/{vector_id}")]
 async fn update_vector(qclient: web::Data<Qdrant>, vector: web::Json<Vector>) -> impl Responder {
     let vector = vector.into_inner();
     let payload = vector.payload.clone().unwrap_or_default();
@@ -82,7 +82,7 @@ async fn update_vector(qclient: web::Data<Qdrant>, vector: web::Json<Vector>) ->
     }
 }
 
-#[delete("/vector/{id}")]
+#[delete("/vector/{vector_id}")]
 async fn delete_vector(qclient: web::Data<Qdrant>, vector_id: web::Path<u64>) -> impl Responder {
     match qclient
         .delete_points(
@@ -111,15 +111,22 @@ async fn main() -> std::io::Result<()> {
     let qclient = create_qdrant_client().await;
 
     //  Create collection
-    let res = qclient
-        .create_collection(
-            CreateCollectionBuilder::new("qtact")
-                .vectors_config(VectorParamsBuilder::new(3, Distance::Cosine)),
-        )
-        .await
-        .unwrap();
-
-    dbg!("Create Collection Response = {:?}", res);
+    match qclient.collection_exists("qtact").await {
+        Ok(true) => (),
+        Ok(false) => {
+            let res = qclient
+                .create_collection(
+                    CreateCollectionBuilder::new("qtact")
+                        .vectors_config(VectorParamsBuilder::new(3, Distance::Cosine)),
+                )
+                .await
+                .unwrap();
+            dbg!("Create Collection Response = {:?}", res);
+        }
+        Err(err) => {
+            panic!("{}", err);
+        }
+    }
 
     let qclient = web::Data::new(qclient);
 
@@ -133,6 +140,7 @@ async fn main() -> std::io::Result<()> {
                 web::scope("/v1")
                     .service(index)
                     .service(create_vector)
+                    .service(get_vector)
                     .service(update_vector)
                     .service(delete_vector),
             )
