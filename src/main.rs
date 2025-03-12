@@ -4,14 +4,16 @@ use qdrant::create_qdrant_client;
 use qdrant_client::qdrant::{CreateCollectionBuilder, Distance, VectorParamsBuilder};
 use routes::{
     index::index,
-    vector::{create_vector, delete_vector, get_vector, match_vector, update_vector},
+    vector::{
+        create_vector::create_vector, delete_vector::delete_vector, get_vector::get_vector,
+        match_vector::match_vector, update_vector::update_vector,
+    },
 };
 
 mod data_model;
 mod qdrant;
 mod routes;
 
-// API Routes
 #[actix_web::main]
 async fn main() -> std::io::Result<()> {
     // Enable logging
