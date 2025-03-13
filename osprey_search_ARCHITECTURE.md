@@ -51,8 +51,8 @@ graph
   redis["Redis Cache Cluster"]
   query --> load_balancer --> api_server
   api_server -- 1a Look in Cache --> redis
-  redis -- 1b Return data on Cache Hit  --> api_server
-subgraph Application Main K8s Cluster 
+  redis -- 1b Return data on Cache Hit --> api_server
+subgraph 
   style Application Main K8s Cluster stroke-dasharray: 5, 5
   api_server
   embedding_model
