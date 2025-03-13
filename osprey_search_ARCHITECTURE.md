@@ -85,7 +85,7 @@ subgraph external_systems
     kafka_topic3
   end
 end
-kafka_producer --> clickhouse_cluster
+kafka_producer --> kconsumer
 ```
 
 User generates a query: -> We respond with the products for that specific query
