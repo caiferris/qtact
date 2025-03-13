@@ -62,9 +62,12 @@ graph
   top_qembedding[Top Query Embeddings]
   sftp[SFTP]
   model_training[Model Training]
-  sdlr_cdump["SDLR Catalogue Dump (Once Per Day)"]
+  sdlr_cdump["`SDLR
+Catalogue Dump
+(Once Per Day)`"]
   rhos_obj_str_pea["`RHOS Object Storage
-(Product Embeddings + Attributes)`"]
+(Product Embeddings +
+Attributes)`"]
   rhos_obj_str_tm["`RHOS Object Storage
 (Trained Model)`"]
   cron["`DB Updating
@@ -113,6 +116,7 @@ subgraph offline
   model_training
 end
 sdlr_cdump --> sftp
+pipeline --> rhos_obj_str_pea
 rhos_obj_str_pea --> cron
 model_training --> rhos_obj_str_tm
 rhos_obj_str_tm --> model_serving
