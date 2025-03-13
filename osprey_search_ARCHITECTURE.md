@@ -58,6 +58,10 @@ subgraph parent_subgraph["Osprey Search"]
     api_server
     embedding_model
   end
+  subgraph qdrant_cluster["Qdrant K8s Cluster"]
+    style qdrant_cluster stroke-dasharray: 5, 5
+    qdrant_vdb -- Products Retrieval --> api_server
+  end
 end
 ```
 
