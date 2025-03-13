@@ -47,10 +47,16 @@ graph
   query["Search A/B Service"]
   load_balancer["Load Balancer"]
   api_server["FastAPI RESTful service"]
+  embedding_model["Embedding Provider Models"]
   redis["Redis Cache Cluster"]
   query --> load_balancer --> api_server
   api_server -- 1a Look in Cache --> redis
   redis -- 1b Return data on Cache Hit --> api_server
+subgraph Group1
+  style Group1 stroke-dasharray: 5, 5
+  api_server
+  embedding_model
+end
 ```
 
 User generates a query: -> We respond with the products for that specific query
