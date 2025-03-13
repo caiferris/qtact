@@ -5,8 +5,8 @@ use qdrant_client::qdrant::{CreateCollectionBuilder, Distance, VectorParamsBuild
 use routes::{
     index::index,
     vector::{
-        create_vector::create_vector, delete_vector::delete_vector, get_vector::get_vector,
-        similar_vector::similar_vector, update_vector::update_vector,
+        create_vector::create_vector, delete_vector::delete_vector, filter_vector::filter_vector,
+        get_vector::get_vector, similar_vector::similar_vector, update_vector::update_vector,
     },
 };
 
@@ -57,7 +57,8 @@ async fn main() -> std::io::Result<()> {
                     .service(get_vector)
                     .service(update_vector)
                     .service(delete_vector)
-                    .service(similar_vector),
+                    .service(similar_vector)
+                    .service(filter_vector),
             )
     })
     .bind(("127.0.0.1", 8080))?
