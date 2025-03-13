@@ -43,7 +43,7 @@ The `ClickHouse` query takes **90%** of the query processing time, which drags t
 The Architecture of `Osprey` search can be visually be presented as:
 
 ```mermaid
-flowchart 
+graph 
   query["Search A/B Service"]
   load_balancer["Load Balancer"]
   api_server["FastAPI RESTful service"]
