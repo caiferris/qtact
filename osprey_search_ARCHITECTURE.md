@@ -45,7 +45,7 @@ The Architecture of `Osprey` search can be visually be presented as:
 ```mermaid
 flowchart 
   query["Search A/B Service"]
-  load_balancer["API Gateway & Load Balancer"]
+  load_balancer["API Gateway &\n Load Balancer"]
   api_server["FastAPI RESTful service"]
   query --> load_balancer --> api_server
 ```
