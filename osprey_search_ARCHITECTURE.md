@@ -47,11 +47,9 @@ graph
   load_balancer["Load Balancer"]
   api_server["FastAPI RESTful service"]
   embedding_model["Embedding Provider Models"]
-  redis["Redis Cache Cluster"]
-  qdrant_vdb["`Qdrant
-(Vector Database)`"]
-  clickhouse_cdb["`ClickHouse DB
-(Product Metadata)`"]
+  redis[(Redis Cache Cluster)]
+  qdrant_vdb[(Qdrant (Vector Database))]
+  clickhouse_cdb[(ClickHouse DB (Product Metadata))]
   external_systems["External Systems"]
   kafka_producer["Kafka Producer"]
   kafka_topic1["1. Price Engine (N.R.T)"]
