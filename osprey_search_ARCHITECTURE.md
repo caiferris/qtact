@@ -43,6 +43,11 @@ The `ClickHouse` query takes **90%** of the query processing time, which drags t
 The Architecture of `Osprey` search can be visually be presented as:
 
 ```mermaid
+%%{
+  init: {
+    'theme': 'dark'
+  }
+}%%
 graph 
   query["Search A/B Service"]
   load_balancer["Load Balancer"]
@@ -58,7 +63,7 @@ subgraph parent_subgraph["Osprey Search"]
   api_server -- 1a Look in Cache --> redis
   redis -- 1b Return data on Cache Hit --> api_server
   subgraph sub_graph_group1["Application Main K8s Cluster"]
-    style sub_graph_group1 stroke: 5, 5,fill: #000
+    style sub_graph_group1 stroke: 5, 5
     api_server
     embedding_model
   end
