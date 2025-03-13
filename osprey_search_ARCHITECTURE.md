@@ -48,11 +48,9 @@ flowchart
   load_balancer["Load Balancer"]
   api_server["FastAPI RESTful service"]
   redis["Redis Cache Cluster"]
-  1a["1a"]
-  1b["1b"]
   query --> load_balancer --> api_server
-  api_server -- 1a --> redis
-  redis -- 1b --> api_server
+  api_server -- 1a Look in Cache --> redis
+  redis -- 1b Return data on Cache Hit --> api_server
 ```
 
 User generates a query: -> We respond with the products for that specific query
