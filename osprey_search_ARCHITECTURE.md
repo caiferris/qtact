@@ -52,7 +52,7 @@ flowchart
   1b["1b"]
   query --> load_balancer --> api_server
   api_server -- 1a --> redis
-  redis -- 1b -- api_server
+  redis -- 1b --> api_server
 ```
 
 User generates a query: -> We respond with the products for that specific query
