@@ -53,9 +53,9 @@ graph
   clickhouse_cdb["`ClickHouse DB
 (Product Metadata)`"]
   external_systems["`Kafka Channels
-1. Price Engine (N.R.T)
-2. Inventory Engine (N.R.T)
-3. Relevancy Engine/PLP Rank
+Price Engine (N.R.T)
+Inventory Engine (N.R.T)
+Relevancy Engine/PLP Rank
 (4 Times a Day)`"]
   query --> load_balancer --> api_server
 subgraph parent_subgraph["Osprey Search"]
