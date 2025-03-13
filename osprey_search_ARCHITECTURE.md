@@ -33,8 +33,18 @@ The `query` gets it's response as the resulted list of products provided by `Cli
 > The `Osprey` search engine can take more than **5 seconds** to process a request.
 
 > [!NOTE]
-> The search results take quite longer even with available optimizations possible within each layer.
+> The search results take quite longer even with available optimizations possible within each layer.\
+> The time taken by embedding generator model is known at the moment.
 
+The `ClickHouse` query takes **90%** of the query processing time, which drags the overall average **QPS** throughput of the `Osprey` search.
+
+## Architecture
+
+The Architecture of `Osprey` search can be visually be presented as:
+
+```mermaid
+[Search A/B Service] -> [API Gateway & Load balancer]
+```
 
 User generates a query: -> We respond with the products for that specific query
 
