@@ -68,7 +68,7 @@ subgraph parent_subgraph["Osprey Search"]
   end
   subgraph clickhouse_cluster["ClickHouse K8s Cluster"]
     style clickhouse_cluster stroke-dasharray: 5, 5
-    clickhouse_cdb --- Facets And Retrieved Products Metadata --- api_server
+    clickhouse_cdb -- Facets And Retrieved Products Metadata --- api_server
   end
 end
 ```
