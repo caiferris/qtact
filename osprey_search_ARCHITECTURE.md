@@ -13,7 +13,7 @@ The `GuardRails` addresses the probable search filters present within the `query
 The `Stella Embedding Model` generates `vector` embeddings for the query.\
 These filters and embeddings are then passed on to the `Qdrant Database` to fetch score ranked, payload filtered `PointIds` (Maximum 1,50,000).\
 
-> These `PointIds` represents products with multiple `SKU`s (Stock Keeping Units).\
+> These `PointIds` represents products with multiple `SKUs` (Stock Keeping Units).\
 > SKU represents that a certain product is available in different colour or sizes.
 
 > [!NOTE]
