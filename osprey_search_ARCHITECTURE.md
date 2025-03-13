@@ -48,6 +48,8 @@ flowchart
   load_balancer["Load Balancer"]
   api_server["FastAPI RESTful service"]
   redis["Redis Cache Cluster"]
+  1a["1a"]
+  1b["1b"]
   query --> load_balancer --> api_server
   api_server -- 1a --> redis
   redis -- 1b -- api_server
