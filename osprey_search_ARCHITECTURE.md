@@ -45,7 +45,7 @@ The Architecture of `Osprey` search can be visually be presented as:
 ```mermaid
 %%{
   init: {
-    'theme': 'dark'
+    'theme': 'forest'
   }
 }%%
 graph 
