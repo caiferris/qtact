@@ -4,6 +4,10 @@
 
 A search engine which understands your users and provides best results from millions of products in the catalogue.
 
+> [!WARN]
+> The choice of tools is not concrete, can change in upcoming iterations.\
+> **Qdrant** and **ClickHouse** can be replaced with something better.
+
 ## How Does The Osprey Search Works?
 
 The search flow starts with a `query` hitting the `Load balancer`.\
@@ -11,7 +15,7 @@ The request is then routed to an available back-end `server` (currently : `FastA
 The `spell-correction` is cached for probable repeated erroneous queries.\
 The `GuardRails` addresses the probable search filters present within the `query`, such as, 'Black shoes under 4000', tells the `Osprey` search to keep the price of product listings under 4000. Which means it generates payload filters for vector database.\
 The `Stella Embedding Model` generates `vector` embeddings for the query.\
-These filters and embeddings are then passed on to the `Qdrant Database` to fetch score ranked, payload filtered `PointIds` (Maximum 1,50,000).\
+These filters and embeddings are then passed on to the `Qdrant Database` to fetch score ranked, payload filtered `PointIds` (Maximum 1,50,000).
 
 > These `PointIds` represents products with multiple `SKUs` (Stock Keeping Units).\
 > SKU represents that a certain product is available in different colour or sizes.
@@ -20,6 +24,16 @@ These filters and embeddings are then passed on to the `Qdrant Database` to fetc
 > `PointIds` Data is Cached for frequent and fast retrieval
 
 These `PointIds` are used to fetch results of the inventory from `ClickHouse` (A Columnar Database).\
+`ClickHouse` searches for `granules` which contain the `PointIds` and provides the metadata for the products result in *increasing order* of **SKUs** *price*.\
+The `query` gets it's response as the resulted list of products provided by `ClickHouse`.
+
+## Challenges
+
+> [!CAUTION]
+> The `Osprey` search engine can take more than **5 seconds** to process a request.
+
+> [!NOTE]
+> The search results take quite longer even with available optimizations possible within each layer.
 
 
 User generates a query: -> We respond with the products for that specific query
