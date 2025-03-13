@@ -56,6 +56,14 @@ graph
   kafka_topic1["Price Engine (N.R.T)"]
   kafka_topic2["Inventory Engine (N.R.T)"]
   kafka_topic3["Relevancy Engine/PLP Rank\n (4 Times a Day)"]
+  offline[Offline Processing]
+  pipeline[Pipeline to Generate]
+  product_embedding[Product Embeddings]
+  top_qembedding[Top Query Embeddings]
+  sftp[SFTP]
+  model_training[Model Training]
+  sdlr_cdump[SDLR Catalogue Dump (Once Per Day)]
+
   query --> load_balancer --> api_server
 subgraph parent_subgraph["Osprey Search"]
   api_server -- 1a Look in Cache --> redis
@@ -88,6 +96,15 @@ subgraph external_systems
   end
 end
 kafka_producer --> kconsumer
+subgraph offline
+  subgraph pipeline
+    product_embedding
+    top_qembedding
+  end
+  sftp --> pipeline
+  model_training
+end
+sdlr_cdump --> sftp
 ```
 
 User generates a query: -> We respond with the products for that specific query
