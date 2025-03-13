@@ -49,6 +49,10 @@ graph
   api_server["FastAPI RESTful service"]
   embedding_model["Embedding Provider Models"]
   redis["Redis Cache Cluster"]
+  qdrant_vdb["`Qdrant
+(Vector Database)`"]
+  clickhouse_cdb["`ClickHouse DB
+(Product Metadata)`"]
   query --> load_balancer --> api_server
 subgraph parent_subgraph["Osprey Search"]
   api_server -- 1a Look in Cache --> redis
@@ -61,6 +65,10 @@ subgraph parent_subgraph["Osprey Search"]
   subgraph qdrant_cluster["Qdrant K8s Cluster"]
     style qdrant_cluster stroke-dasharray: 5, 5
     qdrant_vdb -- Products Retrieval --> api_server
+  end
+  subgraph clickhouse_cluster["ClickHouse K8s Cluster"]
+    style clickhouse_cluster stroke-dasharray: 5, 5
+    clickhouse_cdb -- Products Retrieval --> api_server
   end
 end
 ```
