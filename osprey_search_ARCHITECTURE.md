@@ -54,7 +54,7 @@ subgraph parent_subgraph["Osprey Search"]
   api_server -- 1a Look in Cache --> redis
   redis -- 1b Return data on Cache Hit --> api_server
   subgraph sub_graph_group1["Application Main K8s Cluster"]
-    style sub_graph_group1 stroke-dasharray: 5, 5
+    style sub_graph_group1 stroke: 5, 5
     api_server
     embedding_model
   end
