@@ -46,7 +46,7 @@ graph
   query["Search A/B Service"]
   load_balancer["Load Balancer"]
   api_server["FastAPI RESTful service"]
-  embedding_model["Embedding Provider Models"]
+  model_serving["Model Serving"]
   redis[(Redis Cache Cluster)]
   qdrant_vdb[(Qdrant Vector Database)]
   clickhouse_cdb[(ClickHouse DB - Product Metadata)]
@@ -63,6 +63,12 @@ graph
   sftp[SFTP]
   model_training[Model Training]
   sdlr_cdump["SDLR Catalogue Dump (Once Per Day)"]
+  rhos_obj_str_pea["`RHOS Object Storage
+(Product Embeddings + Attributes)`"]
+  rhos_obj_str_tm["`RHOS Object Storage
+(Trained Model)`"]
+  cron["`DB Updating
+K8s Cron`"]
 
   query --> load_balancer --> api_server
 subgraph parent_subgraph["Osprey Search"]
@@ -71,7 +77,7 @@ subgraph parent_subgraph["Osprey Search"]
   subgraph sub_graph_group1["Application Main K8s Cluster"]
     style sub_graph_group1 stroke: 5, 5
     api_server
-    embedding_model
+    model_serving
   end
   subgraph qdrant_cluster["Qdrant K8s Cluster"]
     style qdrant_cluster stroke-dasharray: 5, 5
@@ -82,11 +88,13 @@ subgraph parent_subgraph["Osprey Search"]
     clickhouse_cdb -- Facets And Retrieved Products Metadata --- api_server
   end
   kconsumer --> clickhouse_cluster
+  cron --> qdrant_cluster
+  cron --> clickhouse_cluster
 end
 subgraph external_systems
-  style external_systems stroke: 5, 5
+  style external_systems stroke-dasharray: 5, 5
   subgraph kafka_producer
-    style kafka_producer stroke-dasharray: 5, 5
+    style kafka_producer stroke: 5, 5
     subgraph kafka_topics
       style kafka_topics stroke-dasharray: 5, 5
       kafka_topic1
@@ -105,6 +113,9 @@ subgraph offline
   model_training
 end
 sdlr_cdump --> sftp
+rhos_obj_str_pea --> cron
+model_training --> rhos_obj_str_tm
+rhos_obj_str_tm --> model_serving
 ```
 
 User generates a query: -> We respond with the products for that specific query
