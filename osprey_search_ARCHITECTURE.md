@@ -4,7 +4,7 @@
 
 A search engine which understands your users and provides best results from millions of products in the catalogue.
 
-> [!WARN]
+> [!WARNING]
 > The choice of tools is not concrete, can change in upcoming iterations.\
 > **Qdrant** and **ClickHouse** can be replaced with something better.
 
