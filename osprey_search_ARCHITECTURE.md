@@ -62,7 +62,7 @@ graph
   top_qembedding[Top Query Embeddings]
   sftp[SFTP]
   model_training[Model Training]
-  sdlr_cdump[SDLR Catalogue Dump (Once Per Day)]
+  sdlr_cdump["SDLR Catalogue Dump (Once Per Day)"]
 
   query --> load_balancer --> api_server
 subgraph parent_subgraph["Osprey Search"]
