@@ -54,7 +54,9 @@ graph
 (Product Metadata)`"]
   external_systems["External Systems"]
   kafka_producer["Kafka Producer"]
-  kafka_topics["`1. Price Engine (N.R.T)\n2. Inventory Engine (N.R.T)\3. Relevancy Engine/PLP Rank\n (4 Times a Day)`"]
+  kafka_topic1["1. Price Engine (N.R.T)"]
+  kafka_topic2["2. Inventory Engine (N.R.T)"]
+  kafka_topic3["3. Relevancy Engine/PLP Rank\n (4 Times a Day)"]
   query --> load_balancer --> api_server
 subgraph parent_subgraph["Osprey Search"]
   api_server -- 1a Look in Cache --> redis
@@ -78,7 +80,9 @@ subgraph external_systems
   style external_systems stroke: 5, 5
   subgraph kafka_producer
     style kafka_producer stroke-dasharray: 5, 5
-    kafka_topics
+    kafka_topic1
+    kafka_topic2
+    kafka_topic3
   end
 end
 kafka_topics --> clickhouse_cluster
