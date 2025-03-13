@@ -17,10 +17,9 @@ The `GuardRails` addresses the probable search filters present within the `query
 The `Stella Embedding Model` generates `vector` embeddings for the query.\
 These filters and embeddings are then passed on to the `Qdrant Database` to fetch score ranked, payload filtered `PointIds` (Maximum 1,50,000).
 
-> These `PointIds` represents products with multiple `SKUs` (Stock Keeping Units).\
-> SKU represents that a certain product is available in different colour or sizes.
-
 > [!NOTE]
+> These `PointIds` represents products with multiple `SKUs` (Stock Keeping Units).\
+> SKU represents that a certain product is available in different colour or sizes.\
 > `PointIds` Data is Cached for frequent and fast retrieval
 
 These `PointIds` are used to fetch results of the inventory from `ClickHouse` (A Columnar Database).\
@@ -43,11 +42,6 @@ The `ClickHouse` query takes **90%** of the query processing time, which drags t
 The Architecture of `Osprey` search can be visually be presented as:
 
 ```mermaid
-%%{
-  init: {
-    'theme': 'dark'
-  }
-}%%
 graph 
   query["Search A/B Service"]
   load_balancer["Load Balancer"]
@@ -75,6 +69,7 @@ subgraph parent_subgraph["Osprey Search"]
     style clickhouse_cluster stroke-dasharray: 5, 5
     clickhouse_cdb -- Facets And Retrieved Products Metadata --- api_server
   end
+  kconsumer --> clickhouse_cluster
 end
 ```
 
