@@ -18,9 +18,9 @@ The `Stella Embedding Model` generates `vector` embeddings for the query.\
 These filters and embeddings are then passed on to the `Qdrant Database` to fetch score ranked, payload filtered `PointIds` (Maximum 1,50,000).
 
 > [!NOTE]
-> These `PointIds` represents products with multiple `SKUs` (Stock Keeping Units).\
-> SKU represents that a certain product is available in different colour or sizes.\
-> `PointIds` Data is Cached for frequent and fast retrieval
+> - These `PointIds` represents products with multiple `SKUs` (Stock Keeping Units).
+> - SKU represents that a certain product is available in different colour or sizes.
+> - `PointIds` Data is Cached for frequent and fast retrieval
 
 These `PointIds` are used to fetch results of the inventory from `ClickHouse` (A Columnar Database).\
 `ClickHouse` searches for `granules` which contain the `PointIds` and provides the metadata for the products result in *increasing order* of **SKUs** *price*.\
