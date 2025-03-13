@@ -52,6 +52,11 @@ graph
 (Vector Database)`"]
   clickhouse_cdb["`ClickHouse DB
 (Product Metadata)`"]
+  external_systems["`Kafka Channels
+1. Price Engine (N.R.T)
+2. Inventory Engine (N.R.T)
+3. Relevancy Engine/PLP Rank
+(4 Times a Day)`"]
   query --> load_balancer --> api_server
 subgraph parent_subgraph["Osprey Search"]
   api_server -- 1a Look in Cache --> redis
@@ -71,6 +76,7 @@ subgraph parent_subgraph["Osprey Search"]
   end
   kconsumer --> clickhouse_cluster
 end
+external_systems --> kconsumer
 ```
 
 User generates a query: -> We respond with the products for that specific query
