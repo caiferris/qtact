@@ -47,7 +47,7 @@ flowchart
   query["Search A/B Service"]
   load_balancer["API Gateway & Load Balancer"]
   api_server["FastAPI RESTful service"]
-  query -- load_balancer --> api_server
+  query --> load_balancer --> api_server
 ```
 
 User generates a query: -> We respond with the products for that specific query
